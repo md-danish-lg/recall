@@ -1,6 +1,7 @@
 package com.danish.backend;
 
 
+import com.danish.backend.authflow.InvalidCredentialException;
 import com.danish.backend.user.EmailAlreadyExistsException;
 import com.danish.backend.user.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -21,4 +22,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleEmailExists(EmailAlreadyExistsException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(InvalidCredentialException.class)
+    public ResponseEntity<String> handleInvalidCredentials(InvalidCredentialException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+
 }
