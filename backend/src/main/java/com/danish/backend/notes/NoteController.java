@@ -2,11 +2,12 @@ package com.danish.backend.notes;
 
 
 import com.danish.backend.user.User;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +25,12 @@ public class NoteController {
     @GetMapping
     public ResponseEntity<List<Note>> getNotes(@AuthenticationPrincipal User user){
         return ResponseEntity.ok(noteService.getNotesByUser(user));
+    }
+
+    @PostMapping
+    public ResponseEntity<Note> addNewNote(@AuthenticationPrincipal User user, @RequestBody @Valid NoteRequest noteRequest){
+        Note note = noteService.addNote(user, noteRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(note);
+
     }
 }
