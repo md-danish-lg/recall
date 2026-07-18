@@ -26,4 +26,10 @@ public class AuthController {
         return ResponseEntity.ok("User Registered Successfully");
 
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> getUser(@RequestBody @Valid LoginRequest loginRequest){
+        LoginResponse loginResponse = authService.findUser(loginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
 }
