@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class NoteService {
@@ -34,4 +35,28 @@ public class NoteService {
     }
 
 
+    public Note updateNoteById(UUID id, NoteRequest noteRequest, User user) {
+        Note note = noteRepository.findById(id).orElseThrow(()->
+                new NoteNotFoundException("Note doesnt exist"));
+
+        if(note.getUser().getId().equals(user.getId())){
+            note.setTitle(noteRequest.getTitle());
+            note.setContent(noteRequest.getContent());
+            noteRepository.save(note);
+            return note;
+        }else{
+            throw new NoteNotFoundException("Note doesnt exist");
+        }
+    }
+
+    public void deleteNoteById(UUID id, User user){
+        Note note = noteRepository.findById(id).orElseThrow(()->
+                new NoteNotFoundException("Note doesnt exist"));
+
+        if(note.getUser().getId().equals(user.getId())){
+            noteRepository.deleteById(id);
+        }else{
+            throw new NoteNotFoundException("Note doesnt exist");
+        }
+    }
 }
