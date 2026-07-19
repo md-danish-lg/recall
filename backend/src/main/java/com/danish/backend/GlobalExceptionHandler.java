@@ -2,6 +2,7 @@ package com.danish.backend;
 
 
 import com.danish.backend.authflow.InvalidCredentialException;
+import com.danish.backend.documents.InvalidExtensionException;
 import com.danish.backend.notes.NoteNotFoundException;
 import com.danish.backend.user.EmailAlreadyExistsException;
 import com.danish.backend.user.UsernameNotFoundException;
@@ -34,5 +35,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidExtensionException.class)
+    public ResponseEntity<String> handleInvalidExtension(InvalidExtensionException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 
 }
