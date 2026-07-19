@@ -23,25 +23,30 @@ public class NoteController {
 
 
     @GetMapping
-    public ResponseEntity<List<Note>> getNotes(@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(noteService.getNotesByUser(user));
+    public ResponseEntity<List<NoteResponse>> getNotes(@AuthenticationPrincipal User user){
+        List<Note> note = noteService.getNotesByUser(user);
+        List<NoteResponse> noteResponse = note.stream()
+                .map(NoteResponse::new)
+                .toList();
+
+        return ResponseEntity.ok(noteResponse);
     }
 
     @PostMapping
-    public ResponseEntity<Note> addNewNote(@AuthenticationPrincipal User user, @RequestBody @Valid NoteRequest noteRequest){
+    public ResponseEntity<NoteResponse> addNewNote(@AuthenticationPrincipal User user, @RequestBody @Valid NoteRequest noteRequest){
         Note note = noteService.addNote(user, noteRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(note);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new NoteResponse(note));
 
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Note> updateNote(
+    public ResponseEntity<NoteResponse> updateNote(
             @AuthenticationPrincipal User user,
             @PathVariable UUID id,
             @RequestBody @Valid NoteRequest noteRequest){
 
         Note note = noteService.updateNoteById(id, noteRequest, user);
-        return ResponseEntity.ok(note);
+        return ResponseEntity.ok(new NoteResponse(note));
     }
 
     @DeleteMapping("{id}")
