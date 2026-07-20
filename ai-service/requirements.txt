@@ -5,3 +5,4 @@ chromadb
 langchain-text-splitters
 pypdf
 python-dotenv
+sentence_transformers
