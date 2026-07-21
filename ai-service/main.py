@@ -28,10 +28,12 @@ async def embed_file(document_id: str=Form(...), file: UploadFile = File(...)):
         raw_text = "\n".join(page.extract_text() or "" for page in reader.pages)
     elif name.endswith('.md'):
         raw_text = (await file.read()).decode("utf-8", errors="ignore")
-    else:
+    elif name.endswith('.txt'):
+        raw_text = (await file.read()).decode("utf-8", errors="ignore").strip()
+    else: 
         raise HTTPException(400, "Supported Types: .pdf, .txt, .md")
     
-    raw_text = raw_text.strip()
+    
     if not raw_text:
         raise HTTPException(400, "No extractable text")
     
