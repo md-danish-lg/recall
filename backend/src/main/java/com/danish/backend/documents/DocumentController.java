@@ -26,6 +26,7 @@ public class DocumentController {
             @RequestParam("file") MultipartFile file){
 
         Document document = documentService.uploadNewDocument(user, file);
+        documentService.processEmbedding(document);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new DocumentResponse(document));
     }

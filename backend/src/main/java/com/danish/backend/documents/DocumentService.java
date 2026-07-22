@@ -15,9 +15,14 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     @Value("${file.upload-dir}") private String fullPath;
 
-    public DocumentService(DocumentRepository documentRepository) {
+    private final AiService aiService;
+
+    public DocumentService(DocumentRepository documentRepository,
+                           AiService aiService) {
+        this.aiService = aiService;
         this.documentRepository = documentRepository;
     }
+
 
     public Document uploadNewDocument(User user, MultipartFile file) {
         Document document = new Document();
@@ -49,6 +54,19 @@ public class DocumentService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void processEmbedding(Document document){
+        String documentId = document.getId().toString();
+        File file = new File(document.getFilePath());
+
+        boolean embedStatus = aiService.embedFile(documentId, file);
+        if(embedStatus){
+            document.setStatus(DocumentStatus.EMBEDDED);
+        }else{
+            document.setStatus(DocumentStatus.FAILED);
+        }
+        documentRepository.save(document);
     }
 
     public List<Document> getDocumentsByUser(User user) {
